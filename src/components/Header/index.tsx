@@ -11,6 +11,9 @@ export const Header: React.FC = () => {
         <a href="/" className={classes.logo}>
           🎁
         </a>
+        <Link href="/account" useRouter>
+          Account
+        </Link>
       </div>
       <div className={classes.innerContainer}>
         <Link type="button" href="https://erc5189.io">

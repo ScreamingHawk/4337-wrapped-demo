@@ -15,6 +15,7 @@ export default createUseStyles({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "baseline",
     gap: "1em",
   },
   logo: {
