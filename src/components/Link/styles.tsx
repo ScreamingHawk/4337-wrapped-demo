@@ -1,7 +1,8 @@
 import { createUseStyles } from "react-jss"
-import { ThemeProps } from "../../components/ThemeProvider"
+import { ThemeProps } from "../../providers/ThemeProvider"
 
 const linkStyle = {
+  textAlign: "center",
   fontWeight: "bold",
   color: (theme: ThemeProps) => theme.colors.accent,
 }

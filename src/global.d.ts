@@ -1,4 +1,4 @@
-import { ThemeProps } from "./components/ThemeProvider"
+import { ThemeProps } from "./providers/ThemeProvider"
 
 declare global {
   namespace Jss {

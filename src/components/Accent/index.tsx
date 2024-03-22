@@ -1,10 +1,18 @@
 import React from "react"
 import { useTheme } from "react-jss"
-import { ThemeProps } from "../ThemeProvider"
+import { ThemeProps } from "../../providers/ThemeProvider"
 import useStyles from "./styles"
 
-export const Accent: React.FC<React.PropsWithChildren> = ({ children }) => {
+type AccentProps = {
+  loud?: boolean
+}
+
+export const Accent: React.FC<React.PropsWithChildren<AccentProps>> = ({
+  loud = false,
+  children,
+}) => {
   const theme = useTheme<ThemeProps>()
   const classes = useStyles(theme)
-  return <span className={classes.accent}>{children}</span>
+  const className = loud ? classes.loud : classes.accent
+  return <span className={className}>{children}</span>
 }

@@ -7,8 +7,15 @@ export const Header: React.FC = () => {
 
   return (
     <nav className={classes.container}>
-      <div className={classes.innerContainer}>🎁</div>
       <div className={classes.innerContainer}>
+        <a href="/" className={classes.logo}>
+          🎁
+        </a>
+      </div>
+      <div className={classes.innerContainer}>
+        <Link type="button" href="https://erc5189.io">
+          ERC-5189 Docs
+        </Link>
         <Link type="button" href="https://www.erc4337.io/docs">
           ERC-4337 Docs
         </Link>

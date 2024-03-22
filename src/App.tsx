@@ -1,6 +1,7 @@
 import useStyles from "./App.styles"
 import { Header } from "./components/Header"
-import { ThemeProvider } from "./components/ThemeProvider"
+import { AccountContextProvider } from "./providers/AccountProvider"
+import { ThemeProvider } from "./providers/ThemeProvider"
 import { Router } from "./pages/Router"
 
 const App: React.FC = () => {
@@ -8,12 +9,14 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className={classes.wrapper}>
-        <Header />
-        <div className={classes.container}>
-          <Router />
+      <AccountContextProvider>
+        <div className={classes.wrapper}>
+          <Header />
+          <div className={classes.container}>
+            <Router />
+          </div>
         </div>
-      </div>
+      </AccountContextProvider>
     </ThemeProvider>
   )
 }
