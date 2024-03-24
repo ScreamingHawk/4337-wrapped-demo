@@ -5,8 +5,11 @@
 #
 
 pre-commit:
-  parallel: true
+  piped: true
   commands:
+    prettier:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: yarn prettier {staged_files} --ignore-unknown --write
     eslint:
       glob: "*.{js,ts,jsx,tsx}"
       run: yarn eslint {staged_files}
