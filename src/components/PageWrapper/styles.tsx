@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss"
 
+export const wrapperContainerWidth = 920
+
 const styles = {
   wrapper: {
     display: "flex",
@@ -12,7 +14,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: "920px",
+    maxWidth: `${wrapperContainerWidth}px`,
     margin: "auto",
     flex: 1,
   },

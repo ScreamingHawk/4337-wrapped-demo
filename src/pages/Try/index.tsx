@@ -67,7 +67,6 @@ export const TryPage: React.FC = () => {
           <Break />
           <H2>User Operation</H2>
           <UserOpDisplay userOp={userOp} />
-          <Break />
         </>
       )}
     </div>
