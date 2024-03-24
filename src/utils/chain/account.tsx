@@ -1,17 +1,19 @@
-import { Contract, Signer } from "ethers"
+import { BigNumberish, Contract, Interface, Signer } from "ethers"
 import { ACCOUNT_FACTORY_ADDR, ENTRY_POINT_ADDR } from "../constants"
 import EntryPointAbi from "./abi/EntryPoint.json"
 import AccountFactoryAbi from "./abi/SimpleAccountFactory.json"
+import AccountAbi from "./abi/SimpleAccount.json"
 import { UserOperation, getUserOpHash } from "./useroperation"
 
 type TxRequest = {
   to: string
   nonce?: number
   data?: string
-  value?: number
+  value?: BigNumberish
 }
 
 export class Account {
+  private readonly interface: Interface = new Interface(AccountAbi)
   private readonly factory: Contract
   private readonly entryPoint: Contract
 
@@ -58,14 +60,16 @@ export class Account {
   }
 
   async signedUserOperationFromTx(tx: TxRequest): Promise<UserOperation> {
-    if (!tx.nonce) {
-      tx.nonce = await this.getNonce()
-    }
+    const callData = this.interface.encodeFunctionData("execute", [
+      tx.to,
+      tx.value ?? 0,
+      tx.data ?? "0x",
+    ])
 
     const userOp: UserOperation = {
       sender: await this.getAddress(),
-      nonce: tx.nonce,
-      callData: tx.data ?? "0x",
+      nonce: tx.nonce ?? (await this.getNonce()),
+      callData,
       callGasLimit: 0,
       verificationGasLimit: 0,
       preVerificationGas: 0,

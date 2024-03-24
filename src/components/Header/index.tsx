@@ -14,6 +14,9 @@ export const Header: React.FC = () => {
         <Link href="/account" useRouter>
           Account
         </Link>
+        <Link href="/try" useRouter>
+          Try it out
+        </Link>
       </div>
       <div className={classes.innerContainer}>
         <Link type="button" href="https://erc5189.io">

@@ -12,6 +12,12 @@ export default createUseStyles({
     flexDirection: "column",
     justifyContent: "center",
   },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    gap: "1em",
+  },
   img: {
     width: "100%",
     objectFit: "cover",

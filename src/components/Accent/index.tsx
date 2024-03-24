@@ -5,14 +5,19 @@ import useStyles from "./styles"
 
 type AccentProps = {
   loud?: boolean
+  extraClassName?: string
 }
 
 export const Accent: React.FC<React.PropsWithChildren<AccentProps>> = ({
   loud = false,
+  extraClassName,
   children,
 }) => {
   const theme = useTheme<ThemeProps>()
   const classes = useStyles(theme)
-  const className = loud ? classes.loud : classes.accent
+  let className = loud ? classes.loud : classes.accent
+  if (extraClassName) {
+    className += ` ${extraClassName}`
+  }
   return <span className={className}>{children}</span>
 }

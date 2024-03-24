@@ -9,7 +9,7 @@ import useStyles from "./styles"
 import { Link } from "../../components/Link"
 import { CONFIG } from "../../config/config"
 
-export const Account: React.FC = () => {
+export const AccountPage: React.FC = () => {
   const classes = useStyles()
 
   const { accountInfo, signer } = useContext(AccountContext)

@@ -1,8 +1,9 @@
 import React from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { Home } from "./Home"
-import { Account } from "./Account"
 import { PageWrapper } from "../components/PageWrapper"
+import { AccountPage } from "./Account"
+import { HomePage } from "./Home"
+import { TryPage } from "./Try"
 
 const wrapped = (element: React.ReactNode) => (
   <PageWrapper>{element}</PageWrapper>
@@ -11,11 +12,15 @@ const wrapped = (element: React.ReactNode) => (
 const router = createBrowserRouter([
   {
     path: "/",
-    element: wrapped(<Home />),
+    element: wrapped(<HomePage />),
   },
   {
     path: "/account",
-    element: wrapped(<Account />),
+    element: wrapped(<AccountPage />),
+  },
+  {
+    path: "/try",
+    element: wrapped(<TryPage />),
   },
 ])
 

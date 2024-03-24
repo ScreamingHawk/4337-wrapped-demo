@@ -7,7 +7,7 @@ import { ThemeProps } from "../../providers/ThemeProvider"
 import geometric_square from "./geometric_sq.webp"
 import useStyles from "./styles"
 
-export const Home: React.FC = () => {
+export const HomePage: React.FC = () => {
   const theme = useTheme<ThemeProps>()
   const classes = useStyles(theme)
 
@@ -20,9 +20,14 @@ export const Home: React.FC = () => {
           <Accent>ERC-5189 Operations</Accent> and submit to a{" "}
           <Accent>public mempool</Accent> for execution.
         </p>
-        <Link useRouter href="/account" type="button">
-          Your Account
-        </Link>
+        <div className={classes.buttonContainer}>
+          <Link useRouter href="/account" type="button">
+            Your Account
+          </Link>
+          <Link useRouter href="/try" type="button">
+            Try it out
+          </Link>
+        </div>
       </div>
       <img
         className={classes.img}
