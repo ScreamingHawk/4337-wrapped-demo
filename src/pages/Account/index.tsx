@@ -43,9 +43,8 @@ export const Account: React.FC = () => {
           <p>
             Your signer key is a private key that acts as the owner of your
             account. It is used to sign transactions and messages on your
-            behalf. Your signer
-            <Accent>does not need to hold assets</Accent> in order to use
-            ERC-4337 or ERC-5189.
+            behalf. Your signer <Accent>does not need to hold assets</Accent> in
+            order to use ERC-4337 or ERC-5189.
             <br />
             <strong>Do not share your signer key with anyone!</strong>
           </p>
