@@ -11,6 +11,7 @@ export default createUseStyles({
     overflow: "hidden",
   },
   inner: {
+    width: "100%",
     maxWidth: "100%",
     objectFit: "cover",
   },

@@ -1,9 +1,14 @@
-import { BigNumberish, Contract, Interface, Signer } from "ethers"
+import { BigNumberish, Contract, Interface, Signer, getBytes } from "ethers"
+import { ErrorDecoder } from "ethers-decode-error"
 import { ACCOUNT_FACTORY_ADDR, ENTRY_POINT_ADDR } from "../constants"
 import EntryPointAbi from "./abi/EntryPoint.json"
-import AccountFactoryAbi from "./abi/SimpleAccountFactory.json"
 import AccountAbi from "./abi/SimpleAccount.json"
-import { UserOperation, getUserOpHash } from "./useroperation"
+import AccountFactoryAbi from "./abi/SimpleAccountFactory.json"
+import {
+  UserOperation,
+  getUserOpHash,
+  packUserOperation,
+} from "./useroperation"
 
 type TxRequest = {
   to: string
@@ -66,25 +71,37 @@ export class Account {
       tx.data ?? "0x",
     ])
 
+    const callGasLimit = await this.provider.estimateGas({
+      from: await this.entryPoint.getAddress(),
+      to: await this.getAddress(),
+      data: callData,
+    })
+
+    const feeData = await this.provider.getFeeData()
+
     const userOp: UserOperation = {
       sender: await this.getAddress(),
-      nonce: tx.nonce ?? (await this.getNonce()),
+      nonce: BigInt(tx.nonce ?? (await this.getNonce())),
       callData,
-      callGasLimit: 0,
-      verificationGasLimit: 0,
-      preVerificationGas: 0,
-      maxFeePerGas: 0,
-      maxPriorityFeePerGas: 0,
+      callGasLimit,
+      verificationGasLimit: 100000n,
+      preVerificationGas: 10000n, //FIXME
+      maxFeePerGas: feeData.maxFeePerGas ?? 0n,
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? 0n,
       signature: "0x",
     }
 
-    if (!this.isDeployed()) {
+    if (!(await this.isDeployed())) {
       // Add init data
       userOp.factory = await this.factory.getAddress()
-      userOp.factoryData = this.factory.interface.encodeFunctionData("deploy", [
-        await this.owner.getAddress(),
-        this.salt,
-      ])
+      userOp.factoryData = this.factory.interface.encodeFunctionData(
+        "createAccount",
+        [await this.owner.getAddress(), this.salt],
+      )
+      userOp.verificationGasLimit += await this.provider.estimateGas({
+        to: userOp.factory,
+        data: userOp.factoryData,
+      })
     }
 
     userOp.signature = await this.signUserOperation(userOp)
@@ -92,6 +109,25 @@ export class Account {
   }
 
   async signUserOperation(userOp: UserOperation): Promise<string> {
-    return this.owner.signMessage(await getUserOpHash(userOp, this.provider))
+    const opHash = await getUserOpHash(userOp, this.provider)
+    return this.owner.signMessage(getBytes(opHash))
+  }
+
+  async simulateUserOperation(userOp: UserOperation): Promise<void> {
+    const packed = packUserOperation(userOp)
+    // const callData = this.entryPoint.interface.encodeFunctionData("handleOps", [
+    //   [packed],
+    //   await this.owner.getAddress(),
+    // ])
+    // console.log(callData)
+    try {
+      await this.entryPoint
+        .getFunction("handleOps")
+        .staticCall([packed], await this.owner.getAddress()) // Beneficiary can be random address for simulation
+    } catch (err) {
+      // Decode error and rethrow
+      const errorDecoder = ErrorDecoder.create([this.entryPoint.interface])
+      throw await errorDecoder.decode(err)
+    }
   }
 }

@@ -1,19 +1,35 @@
 import { formatEther, parseEther } from "ethers"
-import React, { useContext } from "react"
+import { DecodedError } from "ethers-decode-error"
+import React, { useContext, useState } from "react"
 import { Accent } from "../../components/Accent"
 import { Break } from "../../components/Break"
+import { Button } from "../../components/Button"
 import { Form, FormButton, FormLabel } from "../../components/Form"
 import { H1, H2 } from "../../components/Heading"
 import { UserOpDisplay } from "../../components/UserOp"
 import { AccountContext } from "../../providers/AccountProvider"
-import useStyles from "./styles"
+import { Wrapper } from "../../utils/api/wrapper"
 import { UserOperation } from "../../utils/chain/useroperation"
+import useStyles from "./styles"
+
+type SimulationResult = {
+  success: boolean
+  error?: string
+}
+
+type SubmitResult = {
+  success: boolean
+  error?: string
+  erc5189OpHash?: string
+}
 
 export const TryPage: React.FC = () => {
   const classes = useStyles()
 
   const { account, accountInfo } = useContext(AccountContext)
-  const [userOp, setUserOp] = React.useState<UserOperation>()
+  const [userOp, setUserOp] = useState<UserOperation>()
+  const [simulationResult, setSimulationResult] = useState<SimulationResult>()
+  const [submitResult, setSubmitResult] = useState<SubmitResult>()
 
   if (!account || !accountInfo) {
     return (
@@ -36,6 +52,45 @@ export const TryPage: React.FC = () => {
         value: amountVal,
       }),
     )
+  }
+
+  const callSimulate = async () => {
+    if (!userOp) {
+      return
+    }
+
+    try {
+      await account.simulateUserOperation(userOp)
+      setSimulationResult({
+        success: true,
+      })
+    } catch (err) {
+      const result = err as DecodedError
+      const errMsg = result.args?.length > 0 ? result.args[1] : result.reason
+      setSimulationResult({
+        success: false,
+        error: errMsg,
+      })
+    }
+  }
+
+  const sendUserOperation = async () => {
+    if (!userOp) {
+      return
+    }
+    const client = new Wrapper()
+    try {
+      const response = await client.submitUserOperation(userOp)
+      setSubmitResult({
+        success: true,
+        erc5189OpHash: response.operationHash,
+      })
+    } catch (err) {
+      setSubmitResult({
+        success: false,
+        error: (err as Error).message,
+      })
+    }
   }
 
   const balNum = Number.parseFloat(formatEther(accountInfo.balance))
@@ -67,6 +122,28 @@ export const TryPage: React.FC = () => {
           <Break />
           <H2>User Operation</H2>
           <UserOpDisplay userOp={userOp} />
+          <Button onClick={callSimulate}>Simulate</Button>
+          {simulationResult && (
+            <p>
+              <Accent loud>
+                {simulationResult.success
+                  ? "Success"
+                  : `Failed: ${simulationResult.error}`}
+              </Accent>
+            </p>
+          )}
+          {simulationResult?.success && (
+            <Button onClick={sendUserOperation}>Send it!</Button>
+          )}
+          {submitResult && (
+            <p>
+              <Accent loud>
+                {submitResult.success
+                  ? `Success! ERC-5189 Operation Hash: ${submitResult.erc5189OpHash}`
+                  : `Failed: ${submitResult.error}`}
+              </Accent>
+            </p>
+          )}
         </>
       )}
     </div>
