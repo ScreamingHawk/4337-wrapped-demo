@@ -85,7 +85,7 @@ export class Account {
       callData,
       callGasLimit,
       verificationGasLimit: 100000n,
-      preVerificationGas: 10000n, //FIXME
+      preVerificationGas: 25000n, // Enough to cover 4337 bundling costs
       maxFeePerGas: feeData.maxFeePerGas ?? 0n,
       maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? 0n,
       signature: "0x",
