@@ -27,6 +27,7 @@ export const TryPage: React.FC = () => {
   const classes = useStyles()
 
   const { account, accountInfo } = useContext(AccountContext)
+  const [loading, setLoading] = useState(false)
   const [userOp, setUserOp] = useState<UserOperation>()
   const [simulationResult, setSimulationResult] = useState<SimulationResult>()
   const [submitResult, setSubmitResult] = useState<SubmitResult>()
@@ -42,6 +43,7 @@ export const TryPage: React.FC = () => {
 
   const sendTx = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
     const { recipient, amount } = e.currentTarget
     const amountVal = parseEther(amount.value)
@@ -55,12 +57,15 @@ export const TryPage: React.FC = () => {
         value: amountVal,
       }),
     )
+
+    setLoading(false)
   }
 
   const callSimulate = async () => {
     if (!userOp) {
       return
     }
+    setLoading(true)
 
     try {
       setSubmitResult(undefined)
@@ -77,12 +82,14 @@ export const TryPage: React.FC = () => {
         error: errMsg,
       })
     }
+    setLoading(false)
   }
 
   const sendUserOperation = async () => {
     if (!userOp) {
       return
     }
+    setLoading(true)
     const client = new Wrapper()
     try {
       setSubmitResult(undefined)
@@ -97,6 +104,7 @@ export const TryPage: React.FC = () => {
         error: (err as Error).message,
       })
     }
+    setLoading(false)
   }
 
   const balNum = Number.parseFloat(formatEther(accountInfo.balance))
@@ -121,25 +129,31 @@ export const TryPage: React.FC = () => {
           <span>Amount</span>
           <input type="number" max={balNum} name="amount" defaultValue={0.01} />
         </FormLabel>
-        <FormButton type="submit">Create ERC-4337 UserOp</FormButton>
+        <FormButton type="submit" disabled={loading}>
+          Create ERC-4337 UserOp
+        </FormButton>
       </Form>
       {userOp && (
         <>
           <Break />
           <H2>User Operation</H2>
           <UserOpDisplay userOp={userOp} />
-          <Button onClick={callSimulate}>Simulate</Button>
+          <Button onClick={callSimulate} disabled={loading}>
+            Simulate
+          </Button>
           {simulationResult && (
             <p>
               <Accent loud>
                 {simulationResult.success
-                  ? "Success"
-                  : `Failed: ${simulationResult.error}`}
+                  ? "Simulation was successful!"
+                  : `Simulation failed: ${simulationResult.error}`}
               </Accent>
             </p>
           )}
           {simulationResult?.success && (
-            <Button onClick={sendUserOperation}>Send it!</Button>
+            <Button onClick={sendUserOperation} disabled={loading}>
+              Send it!
+            </Button>
           )}
           {submitResult && (
             <p>

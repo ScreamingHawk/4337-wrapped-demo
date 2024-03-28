@@ -9,10 +9,7 @@ export default createUseStyles({
     marginBottom: "1em",
     minWidth: "500px",
   },
-  button: {
-    margin: "1em 0",
-    padding: "1em 0 !important",
-  },
+  button: {},
   element: {
     display: "flex",
     flexDirection: "row",

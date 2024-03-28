@@ -9,6 +9,7 @@ const theme = {
     highlight: "#FDC66A",
     lowlight: "#FDD988",
     background: "#FFFFFF",
+    lightBackground: "#EEEEEE",
   },
 }
 

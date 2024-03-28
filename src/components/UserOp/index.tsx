@@ -1,7 +1,9 @@
 import React from "react"
-import useStyles from "./styles"
+import { useTheme } from "react-jss"
+import { ThemeProps } from "../../providers/ThemeProvider"
 import { UserOperation } from "../../utils/chain/useroperation"
 import { Accent } from "../Accent"
+import useStyles from "./styles"
 
 type UserOpDisplayProps = {
   userOp: UserOperation
@@ -15,7 +17,8 @@ const DisplayElement: React.FC<{
   label: string
   value: string | number | bigint
 }> = ({ label, value }) => {
-  const classes = useStyles()
+  const theme = useTheme<ThemeProps>()
+  const classes = useStyles(theme)
 
   return (
     <tr className={classes.element}>
@@ -28,7 +31,8 @@ const DisplayElement: React.FC<{
 }
 
 export const UserOpDisplay: React.FC<UserOpDisplayProps> = ({ userOp }) => {
-  const classes = useStyles()
+  const theme = useTheme<ThemeProps>()
+  const classes = useStyles(theme)
 
   // eslint-disable-next-line no-console
   console.log(userOp)

@@ -7,15 +7,22 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   extraClassName?: string
 }
 
-export const Button: React.FC<ButtonProps> = ({ extraClassName, ...props }) => {
+export const Button: React.FC<ButtonProps> = ({
+  extraClassName,
+  disabled,
+  ...props
+}) => {
   const theme = useTheme<ThemeProps>()
   const classes = useStyles(theme)
 
+  let className = classes.button
+
   if (extraClassName) {
-    props.className = `${classes.button} ${extraClassName}`
-  } else {
-    props.className = classes.button
+    className += ` ${extraClassName}`
+  }
+  if (disabled) {
+    className += ` ${classes.disabled}`
   }
 
-  return <button {...props}></button>
+  return <button className={className} {...props}></button>
 }
