@@ -46,6 +46,9 @@ export const TryPage: React.FC = () => {
     const { recipient, amount } = e.currentTarget
     const amountVal = parseEther(amount.value)
 
+    setSubmitResult(undefined)
+    setSimulationResult(undefined)
+    setUserOp(undefined)
     setUserOp(
       await account.signedUserOperationFromTx({
         to: recipient.value,
@@ -60,6 +63,8 @@ export const TryPage: React.FC = () => {
     }
 
     try {
+      setSubmitResult(undefined)
+      setSimulationResult(undefined)
       await account.simulateUserOperation(userOp)
       setSimulationResult({
         success: true,
@@ -80,6 +85,7 @@ export const TryPage: React.FC = () => {
     }
     const client = new Wrapper()
     try {
+      setSubmitResult(undefined)
       const response = await client.submitUserOperation(userOp)
       setSubmitResult({
         success: true,
