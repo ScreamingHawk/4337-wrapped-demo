@@ -127,7 +127,13 @@ export const TryPage: React.FC = () => {
         </FormLabel>
         <FormLabel suffix="suffixETH">
           <span>Amount</span>
-          <input type="number" max={balNum} name="amount" defaultValue={0.01} />
+          <input
+            type="number"
+            max={balNum}
+            name="amount"
+            defaultValue={0.01}
+            step="any"
+          />
         </FormLabel>
         <FormButton type="submit" disabled={loading}>
           Create ERC-4337 UserOp
